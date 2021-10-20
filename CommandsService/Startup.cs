@@ -1,16 +1,14 @@
+using CommandsService.DBAccess;
+using CommandsService.Repositories;
+using CommandsService.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CommandsService
 {
@@ -32,6 +30,12 @@ namespace CommandsService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommandsService", Version = "v1" });
             });
+
+            services.AddDbContext<CommandServiceDbContext>
+                        (opt => opt.UseInMemoryDatabase("database"));
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<ICommandServiceRepository, CommandServiceRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

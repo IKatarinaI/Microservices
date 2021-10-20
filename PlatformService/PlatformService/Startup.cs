@@ -16,16 +16,29 @@ namespace PlatformService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environemnt = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environemnt { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if(Environemnt.IsProduction())
+            {
+                services.AddDbContext<PlatformServiceDbContext>
+                        (opt => opt.UseSqlServer(Configuration.GetConnectionString("PlatformsConn")));
+            }
+            else
+            {
+                // local environment
+                services.AddDbContext<PlatformServiceDbContext>
+                        (opt => opt.UseInMemoryDatabase("database"));
+            }
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -38,10 +51,6 @@ namespace PlatformService
 
             // httpclient
             services.AddHttpClient<IHttpCommandDataClient, HttpCommandDataClient>();
-
-            // database
-            services.AddDbContext<PlatformServiceDbContext>
-                    (opt => opt.UseInMemoryDatabase("database"));
 
             // repositories
             services.AddScoped<IPlatformServiceRepository, PlatformServiceRepository>();
@@ -69,7 +78,7 @@ namespace PlatformService
             });
 
             // set up DataPopulationHelper
-            DataPopulationHelper.PopulationSetUp(app);
+            DataPopulationHelper.PopulationSetUp(app, env.IsProduction());
         }
     }
 }

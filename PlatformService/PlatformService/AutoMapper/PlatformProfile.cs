@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PlatformService.DTOs;
 using PlatformService.DTOs.CreateDTOs;
 using PlatformService.DTOs.ReadDTOs;
 using PlatformService.Models;
@@ -11,6 +12,7 @@ namespace PlatformService.AutoMapper
         {
             CreateMap<Platform, ReadPlatformDTO>();
             CreateMap<CreatePlatformDTO, Platform>();
+            CreateMap<ReadPlatformDTO, PlatformPublishedDTO>();
         }
     }
 }
