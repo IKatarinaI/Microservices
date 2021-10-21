@@ -1,4 +1,7 @@
+using CommandsService.AsyncDataServices;
 using CommandsService.DBAccess;
+using CommandsService.EventProcessing;
+using CommandsService.EventProcessing.Interfaces;
 using CommandsService.Repositories;
 using CommandsService.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +39,8 @@ namespace CommandsService
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICommandServiceRepository, CommandServiceRepository>();
+            services.AddSingleton<IEventProcessor, EventProcessor>();
+            services.AddHostedService<MessageBusSubscriber>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

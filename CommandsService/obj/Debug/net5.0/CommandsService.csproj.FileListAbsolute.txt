@@ -36,3 +36,6 @@ C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\obj\Debug\n
 C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\obj\Debug\net5.0\ref\CommandsService.dll
 C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\obj\Debug\net5.0\CommandsService.pdb
 C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\obj\Debug\net5.0\CommandsService.genruntimeconfig.cache
+C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\bin\Debug\net5.0\appsettings.Production.json
+C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\bin\Debug\net5.0\RabbitMQ.Client.dll
+C:\Users\k.ivosevic\Desktop\HackerRank\Microservices\CommandsService\obj\Debug\net5.0\CommandsService.csproj.CopyComplete

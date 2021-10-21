@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PlatformService.AsyncDataServices.Interfaces;
+using PlatformService.DTOs;
 using PlatformService.DTOs.CreateDTOs;
 using PlatformService.DTOs.ReadDTOs;
 using PlatformService.Models;
@@ -18,14 +20,17 @@ namespace PlatformService.Controllers
         private readonly IPlatformServiceRepository _platformServiceRepository;
         private readonly IMapper _mapper;
         private readonly IHttpCommandDataClient _httpCommandDataClient;
+        private readonly IMessageBusClient _messageBusClient;
 
         public PlatformsController(IPlatformServiceRepository platformServiceRepository,
                                    IMapper mapper,
-                                   IHttpCommandDataClient httpCommandDataClient)
+                                   IHttpCommandDataClient httpCommandDataClient,
+                                   IMessageBusClient messageBusClient)
         {
             _platformServiceRepository = platformServiceRepository;
             _mapper = mapper;
             _httpCommandDataClient = httpCommandDataClient;
+            _messageBusClient = messageBusClient;
         }
 
         [HttpGet]
@@ -54,6 +59,7 @@ namespace PlatformService.Controllers
             _platformServiceRepository.SaveChanges();
             var createdPlatform = _mapper.Map<ReadPlatformDTO>(platform);
 
+            // send sync message
             try
             {
                 await _httpCommandDataClient.SendPlatformToCommand(createdPlatform);
@@ -61,6 +67,18 @@ namespace PlatformService.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine($"Could not send synchronously: {ex.Message}");
+            }
+
+            // send async message
+            try
+            {
+                var platformPublishDTO = _mapper.Map<PlatformPublishedDTO>(createdPlatform);
+                platformPublishDTO.Event = "Platform_Published";
+                _messageBusClient.PublishNewPlatform(platformPublishDTO);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not send asynchronously: {ex.Message}");
             }
 
             return Ok(createdPlatform);

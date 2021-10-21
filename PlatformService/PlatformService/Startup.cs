@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using PlatformService.AsyncDataServices;
+using PlatformService.AsyncDataServices.Interfaces;
 using PlatformService.DBAccess;
 using PlatformService.Repositories;
 using PlatformService.Repositories.Interfaces;
@@ -51,6 +53,8 @@ namespace PlatformService
 
             // httpclient
             services.AddHttpClient<IHttpCommandDataClient, HttpCommandDataClient>();
+
+            services.AddSingleton<IMessageBusClient, MessageBusClient>();
 
             // repositories
             services.AddScoped<IPlatformServiceRepository, PlatformServiceRepository>();
